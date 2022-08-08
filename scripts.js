@@ -1,7 +1,11 @@
 window.onload = function(){
+    
     quotes();
     tutorials();
     vids();
+    
+    filters();
+    
     courses();
 
 
@@ -217,14 +221,92 @@ function vids(){
 
 }
 
+function filters(){
+    $("#filters").empty()
+
+    $.ajax({
+        type: 'GET',
+        url: `https://smileschool-api.hbtn.info/courses`,
+        dataType: 'json',
+        success: function(result){
+           
+            let topics = "";
+            let sorts = "";
+            for (let i = 0; i < result["topics"].length; i++){
+                topics += `<option value=${result["topics"][i].charAt(0).toUpperCase() + result["topics"][i].slice(1)}>
+                ${result["topics"][i].charAt(0).toUpperCase() + result["topics"][i].slice(1)}</option>`
+            }
+            for (let j = 0; j < result["sorts"].length; j++){
+
+                const words = result["sorts"][j].split("_");
+
+                for (let i = 0; i < words.length; i++) {
+                    words[i] = words[i][0].toUpperCase() + words[i].substr(1);
+                }
+
+                words2 =words[0] + " " + words[1]
+                // alert(words2)                
+                sorts += `<option value=${result["sorts"][j].charAt(0).toUpperCase() + result["sorts"][j].slice(1)}>
+                ${result["sorts"][j].charAt(0).toUpperCase() + result["sorts"][j].slice(1)}</option>`
+            }
+
+                $("#filters").append(`
+                        <div class="form-group col-12 col-lg-4 text-white">
+                            <label for="searchInput"><b>KEYWORDS</b></label>
+                            <div class=" border-bottom mb-0 mb-lg-3">
+                                <span class="filter-input">
+                                    <span class="search-icon d-flex align-items-center px-2"></span>
+                                </spanf>
+                                        
+                                <input onkeydown="search(this)"class="form-control border-0" name="gsearch" type="search" id="searchInput" placeholder="Search by keywords">
+
+                            </div>
+                        </div>`)
+                $("#filters").append(`
+
+                                <div class="form-group col-12 col-lg-4 text-white ">
+                                <label for="topicSelect"><b>TOPIC</b></label>
+                                <div class="border-bottom mb-0 mb-lg-3">
+                                    <select onchange="topic()" class="form-control border-0" id="topicSelect">
+                                        ${topics}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group col-12 col-lg-4 text-white ">
+                                <label for="exampleFormControlSelect1"><b>SORT BY</b></label>
+                                <div class="border-bottom mb-0 mb-lg-3">
+                                    <select onchange="sort()"class="form-control border-0" id="exampleFormControlSelect1">
+                                        ${sorts}
+                                    </select>
+                                </div>
+                            </div>
+                
+                
+                
+                `)
+
+
+
+        }
+
+        
+    })
+}
+
 
 
 function courses(keywords){
     $("#course-videos").empty()
 
     let keyword
-    let topic = document.getElementById("topicSelect").value
-    let sort = document.getElementById("exampleFormControlSelect1").value
+    let topic;
+    let sort;
+    if (document.getElementById("topicSelect")){
+        topic = document.getElementById("topicSelect").value
+    }
+    if (document.getElementById("exampleFormControlSelect1")){
+        sort = document.getElementById("exampleFormControlSelect1").value
+    }
 
     $.ajax({
         type: 'GET',
@@ -245,7 +327,15 @@ function courses(keywords){
             alert("problem")
         },
         success: function(result){
+            count = 0;
+            console.log(result["topic"])
 
+            if (!topic){
+                topic = result["topic"].charAt(0).toUpperCase() + result["topic"].slice(1);
+            }
+            if (!sort){
+                sort = result["sort"].charAt(0).toUpperCase() + result["sort"].slice(1);
+            }
 
 
             console.log("-------------TESTS-----------")
@@ -266,24 +356,33 @@ function courses(keywords){
             let stars = "";
             let no_stars = ""
             for(let i = 0; i < result["courses"].length; i++){
-                if (result["courses"][i].topic == topic){
-                    if (keywords){
-                        if (result["courses"][i].keywords.includes(keywords.charAt(0).toUpperCase() + keywords.slice(1))){
-                            populate(stars, no_stars, result, i)
+                if (topic == "All"){
+                    count++;
+                    populate(stars, no_stars, result, i, count)
+                } else {
+                        if (result["courses"][i].topic == topic){
+                            if (keywords){
+                                if (result["courses"][i].keywords.includes(keywords.charAt(0).toUpperCase() + keywords.slice(1))){
+                                    count++;
+                                    populate(stars, no_stars, result, i, count)
+                                }
+                            }
+                            else {
+                                console.log("stars = " +result["courses"][i].star)
+                                console.log("published at = " + result["courses"][i].published_at)
+                                console.log("Views = " + result["courses"][i].views)
+
+
+                                count++;
+
+                                populate(stars, no_stars, result, i, count)
+                            }
                         }
                     }
-                    else {
-                        console.log("stars = " +result["courses"][i].star)
-                        console.log("published at = " + result["courses"][i].published_at)
-                        console.log("Views = " + result["courses"][i].views)
-
-
-
-                        populate(stars, no_stars, result, i)
-                    }
-                }
 
             }
+            $("#count").text(`${count} videos`)
+
         }
 
     });
@@ -291,8 +390,8 @@ function courses(keywords){
 
 }
 
-function populate(stars, no_stars, result, i ){
 
+function populate(stars, no_stars, result, i, count ){
 
     stars="";
     no_stars="";
