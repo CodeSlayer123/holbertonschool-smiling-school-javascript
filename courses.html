@@ -71,39 +71,9 @@
 
         <section class="filter bg-royal pt-5 align-items-center">
             <form class="container row">
-                <div class="row">
-                    <div class="form-group col-12 col-lg-4 text-white">
-                        <label for="searchInput"><b>KEYWORDS</b></label>
-                        <div class=" border-bottom mb-0 mb-lg-3">
-                            <span class="filter-input">
-                                <span class="search-icon d-flex align-items-center px-2"></span>
-                            </spanf>
-                            
-                        <input onkeydown="search(this)"class="form-control border-0" name="gsearch" type="search" id="searchInput" placeholder="Search by keywords">
+                <div class="row" id="filters">
 
-                        </div>
-                    </div>
-                    <div class="form-group col-12 col-lg-4 text-white ">
-                        <label for="topicSelect"><b>TOPIC</b></label>
-                        <div class="border-bottom mb-0 mb-lg-3">
-                            <select onchange="topic()" class="form-control border-0" id="topicSelect">
-                                <option value="Novice" >Novice</option>
-                                <option value="Intermediate">Intermediate</option>
-                                <option value="Expert">Expert</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-group col-12 col-lg-4 text-white ">
-                        <label for="exampleFormControlSelect1"><b>SORT BY</b></label>
-                        <div class="border-bottom mb-0 mb-lg-3">
-                            <select onchange="sort()"class="form-control border-0" id="exampleFormControlSelect1">
-                                <option value="Most Popular">Most Popular</option>
-                                <option value="Most Recent">Most Recent</option>
-                                <option value="Most Viewed">Most Viewed</option>
-                            </select>
-                        </div>
-                    </div>
-                    </div>
+                </div>
             </form>
 
         </section>
@@ -111,10 +81,9 @@
         <section class="vids pt-5">
             <div class="vids-inner d-flex flex-column ">
 
-            <p class=" pl- pb-2 text-muted" style="font-size: 16px;">11 videos</p>
-        
+                <p class=" pl- pb-2 text-muted" id="count" style="font-size: 16px;"></p>        
 
-                    <div class="loader"></div>
+                    <div class="loader" id="course-loader"></div>
                 
                             <div class="row" id="course-videos">
 

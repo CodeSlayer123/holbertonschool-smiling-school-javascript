@@ -238,16 +238,9 @@ function filters(){
             }
             for (let j = 0; j < result["sorts"].length; j++){
 
-                const words = result["sorts"][j].split("_");
-
-                for (let i = 0; i < words.length; i++) {
-                    words[i] = words[i][0].toUpperCase() + words[i].substr(1);
-                }
-
-                words2 =words[0] + " " + words[1]
-                // alert(words2)                
+               
                 sorts += `<option value=${result["sorts"][j].charAt(0).toUpperCase() + result["sorts"][j].slice(1)}>
-                ${result["sorts"][j].charAt(0).toUpperCase() + result["sorts"][j].slice(1)}</option>`
+                ${(result["sorts"][j].charAt(0).toUpperCase() + result["sorts"][j].slice(1)).replace("_", " ")}</option>`
             }
 
                 $("#filters").append(`
@@ -340,13 +333,13 @@ function courses(keywords){
 
             console.log("-------------TESTS-----------")
 
-            if (sort == "Most Popular") {
+            if (sort == "Most popular") {
                 result["courses"].sort((a, b) => b.star - a.star);
 
-            } else if (sort == "Most Recent"){
+            } else if (sort == "Most recent"){
                 result["courses"].sort((a, b) => b.published_at - a.published_at);
 
-            }else if (sort == "Most Viewed"){
+            }else if (sort == "Most viewed"){
                 result["courses"].sort((a, b) => b.views - a.views);
 
             }
@@ -446,9 +439,11 @@ function search(keywords){
     }
 }
 function sort(){
+    /*
     let a = document.getElementById("exampleFormControlSelect1")
     let changeTo = a.options[a.selectedIndex].text;
     a.value = changeTo;
+    */
     let searchInput = document.getElementById("searchInput").value
     courses(searchInput);
 }
